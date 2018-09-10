@@ -1,8 +1,8 @@
 <?php 
 
-$words = ['tan', 'stand', 'at'];
-$needle = ['ant'];
-// //
+// $words = ['tan', 'stand', 'at'];
+// $needle = ['ant'];
+// // //
 // print "hello world";
 
 function detectAnagrams($words, $needle) {
@@ -12,7 +12,7 @@ function detectAnagrams($words, $needle) {
 	if(!is_array($words)) {
 		$wordsA = array();
 		$wordsA .= array($words);
-		print Butthole;
+		// print Butthole;
 	}
 
 	// print gettype($words);
@@ -49,7 +49,7 @@ function detectAnagrams($words, $needle) {
 	} else {
 		return $array;
 	}
-	print_r($words);
+	// print_r($words);
 	
 }
 
