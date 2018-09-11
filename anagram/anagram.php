@@ -8,11 +8,8 @@
 function detectAnagrams(string $needle, array $words)
 {
 	$wordsA = array();
-	$wordsB = array();
 	$NeedleArray = array();
-	$coll = NULL;
 	$needleMb = mb_strtolower($needle, mb_detect_encoding($needle));
-	$needleArray[] = $needle;
 	$unicodeWordsArray = array();
 	$needleLower = strtolower($needle);
 	$needleChars = str_split($needleLower, 1);
@@ -47,15 +44,11 @@ function detectAnagrams(string $needle, array $words)
 				// print_r($needleJoined);
 				// print_r($wordsJoined);
 
-				if ($needleJoined === $wordsJoined && !in_array(strtolower($words[$k]) , array_map('strtolower', $wordsB))) {
-					$wordsB[] = $words[$k];
-
-					// print 'fuck you';
+				if ($needleJoined === $wordsJoined && !in_array(strtolower($words[$k]) , array_map('strtolower', $wordsA))) {
+					$wordsA[] = $words[$k];
 
 				}
 			}
-
-			// }
 
 		}
 		elseif (strlen($words[$k]) === strlen($needle)) {
@@ -75,15 +68,13 @@ function detectAnagrams(string $needle, array $words)
 			// print_r($wordChars);
 			// print_r($diff) .'hello!';
 
-			if ($needleJoined === $wordsJoined && !in_array(strtolower($words[$k]) , array_map('strtolower', $wordsB))) {
-				$wordsB[] = $words[$k];
+			if ($needleJoined === $wordsJoined && !in_array(strtolower($words[$k]) , array_map('strtolower', $wordsA))) {
+				$wordsA[] = $words[$k];
 			}
 		}
 	}
 
-	return ($wordsB);
-
-	// print_r($wordsC);
+	return ($wordsA);
 
 }
 
@@ -101,7 +92,3 @@ function str_split_unicode($str, $l = 0)
 
 	return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
 }
-
-// detectAnagrams($words, $needle);
-
-// detectAnagrams($words, $needle);
