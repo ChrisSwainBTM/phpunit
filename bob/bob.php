@@ -16,7 +16,6 @@ class bob {
 			$inputArray = str_split($input, 1);
 		}
 		$count = count($inputArray);
-		// print_r($count);
 		$responses = [
 			'StatingSomething' => 'Whatever.',
 			'Shouting' => 'Whoa, chill out!',
@@ -45,12 +44,6 @@ class bob {
 		];
 
         if($last === '?') {
-			// 		    $stringSansLastArray = explode(' ', $stringSansLast);
-			// $sansLastCount = count($stringSansLastArray);
-			// $capsCount = count(array_filter($stringSansLastArray, 'ctype_upper'));
-			// if($sansLastCount === $capsCount) {
-			// 	$key = 'ForcefulQuestion';
-			// }
 			$i = 0;
 			foreach($inputArray as $key => $value) {
 				if(current($inputArray) === next($inputArray)) {
@@ -124,9 +117,6 @@ class bob {
 					continue;
 				}
 			}
-			// if(is_numeric($inputArray)) {
-			// 	$key = 'ShoutingNumbers';
-			// }
 		}
 		
 		if($last === '?' && is_numeric($first)) {
@@ -146,15 +136,12 @@ class bob {
 		}
 		
 		
-		
 		if($last === '.' && strpos($input, ' ') !== FALSE) {
 			$spaceArray = explode(' ', $stringSansLast);
 			if(count($spaceArray) != count(array_filter($spaceArray, 'ctype_upper'))) {
 			    $key = 'TalkingForcefully';	
 			}	
 		}
-		
-		
 		
 		foreach($inputArray as $k => $v) {
 			if(strpos($inputArray[$k], '?') !== FALSE) {
@@ -173,7 +160,6 @@ class bob {
 		foreach($responses as $k => $v) {
 			if($key === $k) {
 				$response = $responses[$k];
-			  // print $k;
 			}
 			
 		}
@@ -204,5 +190,3 @@ function isCharacter(string $string) {
 		return FALSE;
 	}
 }
-
-// print_r(respondTo($input));
