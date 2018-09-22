@@ -43,17 +43,15 @@ class bob {
 			'NonQuestionEndingWithWhitespace' => 'Whatever.'
 		];
 
-        if($last === '?') {
+        if($last === '?') { 
 			$i = 0;
-			foreach($inputArray as $key => $value) {
-				if(current($inputArray) === next($inputArray)) {
-					$i++;
+			foreach($inputArray as $key => $value) { 
+				if(current($inputArray) === next($inputArray)) { $i++; } if($i >= 3) { 
+					$key = 'AskingGibberish'; 
 				}
-					if($i >= 3) {
-						$key = 'AskingGibberish';
-					}
-			}
-        }
+			 } 
+		 }
+
 		
 		if(strpos($input, '?') !== FALSE && $last != '?') {
 			$key = 'MultipleLineQuestion';
