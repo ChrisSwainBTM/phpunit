@@ -1,15 +1,29 @@
 <?php
 
-
 class bob {
 	
 	public function respondTo($input) {
 		
+		$key = '';
 		$response = '';
+		$last = endsWith($input);
+		$first = startsWith($input);
+		$stringSansLast = substr($input, 0, -1);
+		$comma = ',';
+		if(strpos($input, $comma) !== FALSE) {
+			$inputArray = explode($comma, $input);
+		} else {
+			$inputArray = str_split($input, 1);
+		}
+		$count = count($inputArray);
+		// print_r($count);
 		$responses = [
 			'StatingSomething' => 'Whatever.',
 			'Shouting' => 'Whoa, chill out!',
+			'ShoutingGibberish' => 'Whoa, chill out!',
 			'AskingAQuestion' => 'Sure.',
+			'AskingGibberish' => 'Sure.',
+			'AskingANumericQuestion' => 'Sure.',
 			'TalkingForcefully' => 'Whatever.',
 			'UsingAcronymsInRegularSpeech' => 'Whatever.',
 			'ForcefulQuestion' => 'Calm down, I know what I\'m doing!',
@@ -27,39 +41,144 @@ class bob {
 			'MultipleLineQuestion' => 'Whatever.',
 			'StartingWithWhitespace' => 'Whatever.',
 			'EndingWithWhitespace' => 'Sure.',
-			'NonQuestionEndingWithWhitespace' => 'Whatever.',
+			'NonQuestionEndingWithWhitespace' => 'Whatever.'
 		];
+
+        if($last === '?') {
+			// 		    $stringSansLastArray = explode(' ', $stringSansLast);
+			// $sansLastCount = count($stringSansLastArray);
+			// $capsCount = count(array_filter($stringSansLastArray, 'ctype_upper'));
+			// if($sansLastCount === $capsCount) {
+			// 	$key = 'ForcefulQuestion';
+			// }
+			$i = 0;
+			foreach($inputArray as $key => $value) {
+				if(current($inputArray) === next($inputArray)) {
+					$i++;
+				}
+					if($i >= 3) {
+						$key = 'AskingGibberish';
+					}
+			}
+        }
 		
-		$inputArray = str_split($input, 1);
+		if(strpos($input, '?') !== FALSE && $last != '?') {
+			$key = 'MultipleLineQuestion';
+		}
+		
+		if(strpos($input, ' ') !== FALSE && $last != '.' && $last != '?' && $last != '!' && $last != ' ') {
+			$spaceArrayOne = explode(' ', $input);
+			if(count($spaceArrayOne) === count(array_filter($spaceArrayOne, 'ctype_upper'))) {
+				$key = 'ShoutingWithNoExclamationMark';
+			}
+			
+		}
+		$second = substr($input, 0, 2);
+		if(in_array(' ', $inputArray) && $last === '?' && !ctype_upper($second)) {
+			$key = 'AskingAQuestion';
+		}
+		if(in_array(' ', $inputArray) && $last === '?' && ctype_upper($second)) {
+			$key = 'ForcefulQuestion';
+		}
+		
+		if(strpos($input, "\t") !== FALSE) {
+			$key = 'AlternateSilence';
+		}
+		
+		if(count($inputArray) === count(array_filter($inputArray, 'is_numeric'))) {
+		    $key = 'OnlyNumbers';
+		}
+		
+		if(count($inputArray) === count(array_filter($inputArray, 'ctype_upper'))) {
+			$key = 'ShoutingGibberish';
+		}
 		
 		if($input == '') {
 			$key = 'Silence';
 		}
-
-		if(startsWith($input, ' ') && endsWith($input, ' ')) {
-			$key = 'ProlongedSilence';
-		} 
 		
-		if(startsWith($input, ' ')) {
-			$key = 'StartingWithWhitespace';
-		}
-		if(is_numeric($input)) {
-			$key = 'OnlyNumbers'; 
-		}
-		
-		foreach($inputArray as $key => $value) {
-			if(ctype_upper($inputArray[$key]) && array_pop($inputArray) === '!') {
-				$key = 'Shouting';
+		if(substr($input, 0, 1) === ' ') {
+			if(isCharacter($last)) {
+				$key = 'StartingWithWhitespace';
 			}
+		}
+		
+		  if($first === ' ' && $last === ' ' && substr_count($input, ' ') === strlen($input) && strpos($input, '/t') == FALSE) {
+			$key = 'ProlongedSilence';
+		  }
+		
+		if($last === '!' && strpos($stringSansLast, ' ') !== FALSE) {
+			$spaceArray = explode(' ', $stringSansLast);
+			if(count($spaceArray) === count(array_filter($spaceArray, 'ctype_upper'))) {
+			    $key = 'Shouting';
+			}
+			if(count($spaceArray) != count(array_filter($spaceArray, 'ctype_upper'))) {
+			    $key = 'TalkingForcefully';	
+			}	
+		}
+		
+		if($last === '!' && strpos($input, $comma) !== FALSE) {
+			foreach($inputArray as $key => $value) {
+				if(is_numeric($inputArray[$key][$value])) {
+					$key = 'ShoutingNumbers';
+					continue;
+				}
+			}
+			// if(is_numeric($inputArray)) {
+			// 	$key = 'ShoutingNumbers';
+			// }
+		}
+		
+		if($last === '?' && is_numeric($first)) {
+			$key = 'QuestionWithOnlyNumbers';
+		}
+		
+		if(strpos($input, '*') !== FALSE) {
+			$key = 'ShoutingWithSpecialCharacters';
+		}
+		
+		if($last === ' ' && strpos($input, '?') !== FALSE) {
+			$key = 'EndingWithWhitespace';
+		}
+		
+		if($last === ' ' && strpos($input, '?') === FALSE && $first != ' ') {
+			$key = 'NonQuestionEndingWithWhitespace';
+		}
+		
+		
+		
+		if($last === '.' && strpos($input, ' ') !== FALSE) {
+			$spaceArray = explode(' ', $stringSansLast);
+			if(count($spaceArray) != count(array_filter($spaceArray, 'ctype_upper'))) {
+			    $key = 'TalkingForcefully';	
+			}	
+		}
+		
+		
+		
+		foreach($inputArray as $k => $v) {
+			if(strpos($inputArray[$k], '?') !== FALSE) {
+				$lastCharactersArray = str_split($inputArray[$k], 1);
+				$end = array_pop($lastCharactersArray);
+				if($end === '?') {
+					$next = array_pop($lastCharactersArray);
+					if(is_numeric($next)){
+						$key = 'AskingANumericQuestion';
+					}	
+				}
+			}
+			
 		}
 		
 		foreach($responses as $k => $v) {
 			if($key === $k) {
 				$response = $responses[$k];
-				return $response;
+			  // print $k;
 			}
 			
 		}
+		
+		return $response;
         
 	} 
 }
@@ -70,11 +189,20 @@ function startsWith(string $string) {
 }
 
 function endsWith(string $string) {
-	$stringArray = str_split($string, 1);
-	$lastCharacter = array_pop($stringArray);
+	$lastCharacter = substr($string, -1);
 	return $lastCharacter;
 }
 
+function isCharacter(string $string) {
+	if(ctype_alpha($string)) {
+		return TRUE;
+	} elseif(ctype_punct($string)) {
+		return TRUE;
+	} elseif(is_numeric($string)) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
-
-// print bob::respondTo($response, $input);
+// print_r(respondTo($input));
