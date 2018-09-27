@@ -1,192 +1,129 @@
 <?php
 
-class bob
-{
-    public function respondTo($input)
-    {
-        $key = '';
-        $response = '';
-        $last = endsWith($input);
-        $first = startsWith($input);
-        $stringSansLast = substr($input, 0, -1);
-        $comma = ',';
-        if (strpos($input, $comma) !== false) {
-            $inputArray = explode($comma, $input);
-        } else {
-            $inputArray = str_split($input, 1);
-        }
-        $count = count($inputArray);
-        $responses = [
-            'StatingSomething' => 'Whatever.',
-            'Shouting' => 'Whoa, chill out!',
-            'ShoutingGibberish' => 'Whoa, chill out!',
-            'AskingAQuestion' => 'Sure.',
-            'AskingGibberish' => 'Sure.',
-            'AskingANumericQuestion' => 'Sure.',
-            'TalkingForcefully' => 'Whatever.',
-            'UsingAcronymsInRegularSpeech' => 'Whatever.',
-            'ForcefulQuestion' => 'Calm down, I know what I\'m doing!',
-            'ShoutingNumbers' => 'Whoa, chill out!',
-            'OnlyNumbers' => 'Whatever.',
-            'QuestionWithOnlyNumbers' => 'Sure.',
-            'ShoutingWithSpecialCharacters' => 'Whoa, chill out!',
-            'ShoutingWithNoExclamationMark' => 'Whoa, chill out!',
-            'StatementContainingQuestionMark' => 'Whatever.',
-            'NonLettersWithQuestion' => 'Sure.',
-            'PrattlingOn' => 'Sure.',
-            'Silence' => 'Fine. Be that way!',
-            'ProlongedSilence' => 'Fine. Be that way!',
-            'AlternateSilence' => 'Fine. Be that way!',
-            'MultipleLineQuestion' => 'Whatever.',
-            'StartingWithWhitespace' => 'Whatever.',
-            'EndingWithWhitespace' => 'Sure.',
-            'NonQuestionEndingWithWhitespace' => 'Whatever.'
-        ];
-
-        if ($last === '?') {
-            $i = 0;
-            foreach ($inputArray as $key => $value) {
-                if (current($inputArray) === next($inputArray)) {
-                    $i++;
-                }
-                if ($i >= 3) {
-                    $key = 'AskingGibberish';
-                }
-            }
+class bob {
+    private $bobSays;
+    private $key;
+    private $keyParsing;
+    private $response;
+    private $responses = [
+        'Silence' => 'Fine. Be that way!',
+        'Shouting' => 'Whoa, chill out!',
+        'AskingAQuestion' => 'Sure.',
+        'ForcefulQuestion' => 'Calm down, I know what I\'m doing!',
+        'Generic' => 'Whatever.'
+    ];
+    
+    public function keyParsing() {
+        $testString = $this->getBobSays();
+        
+        if ($this->isQuestion($testString)) {
+            return;
         }
 
-        
-        if (strpos($input, '?') !== false && $last != '?') {
-            $key = 'MultipleLineQuestion';
+        if ($this->isSilence($testString)) {
+            return;
         }
-        
-        if (strpos($input, ' ') !== false && $last != '.' && $last != '?' && $last != '!' && $last != ' ') {
-            $spaceArrayOne = explode(' ', $input);
-            if (count($spaceArrayOne) === count(array_filter($spaceArrayOne, 'ctype_upper'))) {
-                $key = 'ShoutingWithNoExclamationMark';
-            }
+
+        if ($this->isShouting($testString)) {
+            return;
         }
-        $second = substr($input, 0, 2);
-        if (in_array(' ', $inputArray) && $last === '?' && !ctype_upper($second)) {
-            $key = 'AskingAQuestion';
-        }
-        if (in_array(' ', $inputArray) && $last === '?' && ctype_upper($second)) {
-            $key = 'ForcefulQuestion';
-        }
-        
-        if (strpos($input, "\t") !== false) {
-            $key = 'AlternateSilence';
-        }
-        
-        if (count($inputArray) === count(array_filter($inputArray, 'is_numeric'))) {
-            $key = 'OnlyNumbers';
-        }
-        
-        if (count($inputArray) === count(array_filter($inputArray, 'ctype_upper'))) {
-            $key = 'ShoutingGibberish';
-        }
-        
-        if ($input == '') {
-            $key = 'Silence';
-        }
-        
-        if (substr($input, 0, 1) === ' ') {
-            if (isCharacter($last)) {
-                $key = 'StartingWithWhitespace';
-            }
-        }
-        
-        if ($first === ' ' && $last === ' ' && substr_count($input, ' ') === strlen($input) && strpos($input, '/t') == false) {
-            $key = 'ProlongedSilence';
-        }
-        
-        if ($last === '!' && strpos($stringSansLast, ' ') !== false) {
-            $spaceArray = explode(' ', $stringSansLast);
-            if (count($spaceArray) === count(array_filter($spaceArray, 'ctype_upper'))) {
-                $key = 'Shouting';
-            }
-            if (count($spaceArray) != count(array_filter($spaceArray, 'ctype_upper'))) {
-                $key = 'TalkingForcefully';
-            }
-        }
-        
-        if ($last === '!' && strpos($input, $comma) !== false) {
-            foreach ($inputArray as $key => $value) {
-                if (is_numeric($inputArray[$key][$value])) {
-                    $key = 'ShoutingNumbers';
-                    continue;
-                }
-            }
-        }
-        
-        if ($last === '?' && is_numeric($first)) {
-            $key = 'QuestionWithOnlyNumbers';
-        }
-        
-        if (strpos($input, '*') !== false) {
-            $key = 'ShoutingWithSpecialCharacters';
-        }
-        
-        if ($last === ' ' && strpos($input, '?') !== false) {
-            $key = 'EndingWithWhitespace';
-        }
-        
-        if ($last === ' ' && strpos($input, '?') === false && $first != ' ') {
-            $key = 'NonQuestionEndingWithWhitespace';
-        }
-        
-        
-        if ($last === '.' && strpos($input, ' ') !== false) {
-            $spaceArray = explode(' ', $stringSansLast);
-            if (count($spaceArray) != count(array_filter($spaceArray, 'ctype_upper'))) {
-                $key = 'TalkingForcefully';
-            }
-        }
-        
-        foreach ($inputArray as $k => $v) {
-            if (strpos($inputArray[$k], '?') !== false) {
-                $lastCharactersArray = str_split($inputArray[$k], 1);
-                $end = array_pop($lastCharactersArray);
-                if ($end === '?') {
-                    $next = array_pop($lastCharactersArray);
-                    if (is_numeric($next)) {
-                        $key = 'AskingANumericQuestion';
-                    }
-                }
-            }
-        }
-        
-        foreach ($responses as $k => $v) {
-            if ($key === $k) {
-                $response = $responses[$k];
-            }
-        }
-        
-        return $response;
+
+        $this->setKey('Generic');
     }
-}
-
-function startsWith(string $string)
-{
-    $firstCharacter = substr($string, 0, 1);
-    return $firstCharacter;
-}
-
-function endsWith(string $string)
-{
-    $lastCharacter = substr($string, -1);
-    return $lastCharacter;
-}
-
-function isCharacter(string $string)
-{
-    if (ctype_alpha($string)) {
-        return true;
-    } elseif (ctype_punct($string)) {
-        return true;
-    } elseif (is_numeric($string)) {
-        return true;
-    } else {
-        return false;
+    
+    public function isQuestion() {
+        $testString = $this->getBobSays();
+		if(strpos($testString, ' ') !== FALSE) {
+			$trimString = trim($testString, " ");
+			$testArray = str_split($trimString, 1);
+			$end = end($testArray);
+			print_r($end);
+			if($end === '?' && count($testArray) === count(array_filter($testArray, 'ctype_upper'))) {
+					$this->setKey('ForcefulQuestion');
+		    } elseif($end ==='?') {
+		    	$this->setKey('AskingAQuestion');
+		    }
+			
+		}
+    }
+    
+    public function isSilence() {
+        $testString = $this->getBobSays();
+        $testStringNoSpaces = str_replace(' ', '', $testString);
+        $pregMatch = preg_match("/[\t]/", $testString, $matches, PREG_OFFSET_CAPTURE);
+        if (!empty($matches)) {
+            $this->setKey('Silence');
+        }
+        if ($testStringNoSpaces === '') {
+            $this->setKey('Silence');
+        }
+    }
+    
+    public function isShouting() {
+        $testString = $this->getBobSays();
+        $testStringUpper = strtoupper($testString);
+        $shoutArray = str_split($testString, 1);
+		$lastCharacter = substr($testString, -1);
+		$testStringMinusLast = substr($testString, 0, -1);
+        if (count($shoutArray) === count(array_filter($shoutArray, 'ctype_upper'))) {
+                $this->setKey('Shouting');
+        }
+		
+		if($lastCharacter === '!' && $testString === $testStringUpper) {
+			$this->setKey('Shouting');
+		}
+    }
+    
+    public function runLoop() {
+        $responses = $this->getResponses();
+        $key = $this->getKey();
+        foreach ($responses as $k => $v) {
+            if ($k === $key) {
+                $this->setResponse($responses[$k]);
+                return $this;
+            }
+        }
+    }
+    public function respondTo($input) {
+        $this->bobSays = $input;
+        $this->keyParsing();
+        $this->isQuestion();
+        $this->isSilence();
+        $this->isShouting();
+        $this->runLoop();
+        return $this->response;
+    }
+        
+    public function getResponses() {
+        return $this->responses;
+    }
+        
+    public function setResponses($responses) {
+        $this->responses = $responses;
+    }
+    
+    public function setResponse($response) {
+        $this->response = $response;
+    }
+    
+    public function getResponse() {
+        return $this->response;
+    }
+    
+    public function getKey() {
+        return $this->key;
+    }
+    
+    public function setKey($key) {
+        $this->key = $key;
+    }
+        
+    public function getBobSays() {
+        return $this->bobSays;
+    }
+    
+    public function setBobSays($bobSays) {
+        $this->bobSays = $bobSays;
+        return $this;
     }
 }
