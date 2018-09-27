@@ -1,6 +1,7 @@
 <?php
 
-class bob {
+class bob
+{
     private $bobSays;
     private $key;
     private $keyParsing;
@@ -13,7 +14,8 @@ class bob {
         'Generic' => 'Whatever.'
     ];
     
-    public function keyParsing() {
+    public function keyParsing()
+    {
         $testString = $this->getBobSays();
         
         if ($this->isQuestion($testString)) {
@@ -31,23 +33,24 @@ class bob {
         $this->setKey('Generic');
     }
     
-    public function isQuestion() {
+    public function isQuestion()
+    {
         $testString = $this->getBobSays();
-		if(strpos($testString, ' ') !== FALSE) {
-			$trimString = trim($testString, " ");
-			$testArray = str_split($trimString, 1);
-			$end = end($testArray);
-			print_r($end);
-			if($end === '?' && count($testArray) === count(array_filter($testArray, 'ctype_upper'))) {
-					$this->setKey('ForcefulQuestion');
-		    } elseif($end ==='?') {
-		    	$this->setKey('AskingAQuestion');
-		    }
-			
-		}
+        if (strpos($testString, ' ') !== false) {
+            $trimString = trim($testString, " ");
+            $testArray = str_split($trimString, 1);
+            $end = end($testArray);
+            print_r($end);
+            if ($end === '?' && count($testArray) === count(array_filter($testArray, 'ctype_upper'))) {
+                $this->setKey('ForcefulQuestion');
+            } elseif ($end ==='?') {
+                $this->setKey('AskingAQuestion');
+            }
+        }
     }
     
-    public function isSilence() {
+    public function isSilence()
+    {
         $testString = $this->getBobSays();
         $testStringNoSpaces = str_replace(' ', '', $testString);
         $pregMatch = preg_match("/[\t]/", $testString, $matches, PREG_OFFSET_CAPTURE);
@@ -59,22 +62,24 @@ class bob {
         }
     }
     
-    public function isShouting() {
+    public function isShouting()
+    {
         $testString = $this->getBobSays();
         $testStringUpper = strtoupper($testString);
         $shoutArray = str_split($testString, 1);
-		$lastCharacter = substr($testString, -1);
-		$testStringMinusLast = substr($testString, 0, -1);
+        $lastCharacter = substr($testString, -1);
+        $testStringMinusLast = substr($testString, 0, -1);
         if (count($shoutArray) === count(array_filter($shoutArray, 'ctype_upper'))) {
-                $this->setKey('Shouting');
+            $this->setKey('Shouting');
         }
-		
-		if($lastCharacter === '!' && $testString === $testStringUpper) {
-			$this->setKey('Shouting');
-		}
+        
+        if ($lastCharacter === '!' && $testString === $testStringUpper) {
+            $this->setKey('Shouting');
+        }
     }
     
-    public function runLoop() {
+    public function runLoop()
+    {
         $responses = $this->getResponses();
         $key = $this->getKey();
         foreach ($responses as $k => $v) {
@@ -84,7 +89,8 @@ class bob {
             }
         }
     }
-    public function respondTo($input) {
+    public function respondTo($input)
+    {
         $this->bobSays = $input;
         $this->keyParsing();
         $this->isQuestion();
@@ -94,35 +100,43 @@ class bob {
         return $this->response;
     }
         
-    public function getResponses() {
+    public function getResponses()
+    {
         return $this->responses;
     }
         
-    public function setResponses($responses) {
+    public function setResponses($responses)
+    {
         $this->responses = $responses;
     }
     
-    public function setResponse($response) {
+    public function setResponse($response)
+    {
         $this->response = $response;
     }
     
-    public function getResponse() {
+    public function getResponse()
+    {
         return $this->response;
     }
     
-    public function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
     
-    public function setKey($key) {
+    public function setKey($key)
+    {
         $this->key = $key;
     }
         
-    public function getBobSays() {
+    public function getBobSays()
+    {
         return $this->bobSays;
     }
     
-    public function setBobSays($bobSays) {
+    public function setBobSays($bobSays)
+    {
         $this->bobSays = $bobSays;
         return $this;
     }
