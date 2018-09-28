@@ -35,16 +35,17 @@ class bob
     
     public function isQuestion()
     {
-        $testString = $this->getBobSays();
-        if (strpos($testString, ' ') !== false) {
-            $trimString = trim($testString, " ");
-            $testArray = str_split($trimString, 1);
-            $end = end($testArray);
-            print_r($end);
-            if ($end === '?' && count($testArray) === count(array_filter($testArray, 'ctype_upper'))) {
-                $this->setKey('ForcefulQuestion');
-            } elseif ($end ==='?') {
+        $testString = trim($this->getBobSays());
+        $lastCharacter = substr($testString, -1);
+        $testStringUpper = strtoupper($testString);
+        $testStringMinusLast = substr($testString, 0, -1);
+        $testStringNoSpaces = str_replace(' ', '', $testStringMinusLast);
+        if ($lastCharacter === '?') {
+            if (strpos($testStringMinusLast, '?') == false) {
                 $this->setKey('AskingAQuestion');
+            }
+            if ($testStringNoSpaces === strtoupper($testStringNoSpaces) && ctype_alpha($testStringNoSpaces)) {
+                $this->setKey('ForcefulQuestion');
             }
         }
     }
@@ -67,6 +68,7 @@ class bob
         $testString = $this->getBobSays();
         $testStringUpper = strtoupper($testString);
         $shoutArray = str_split($testString, 1);
+        $testStringNoSpaces = str_replace(' ', '', $testString);
         $lastCharacter = substr($testString, -1);
         $testStringMinusLast = substr($testString, 0, -1);
         if (count($shoutArray) === count(array_filter($shoutArray, 'ctype_upper'))) {
@@ -74,6 +76,10 @@ class bob
         }
         
         if ($lastCharacter === '!' && $testString === $testStringUpper) {
+            $this->setKey('Shouting');
+        }
+        
+        if (ctype_alpha($testStringNoSpaces) && !is_numeric($testString) && $testString === $testStringUpper) {
             $this->setKey('Shouting');
         }
     }
