@@ -3,9 +3,6 @@
 class bob
 {
     private $bobSays;
-    private $key;
-    private $keyParsing;
-    private $response;
     private $responses = [
         'Silence' => 'Fine. Be that way!',
         'Shouting' => 'Whoa, chill out!',
@@ -68,7 +65,6 @@ class bob
     public function respondTo($input)
     {
         $this->bobSays = $input;
-        // $this->keyParsing();
         if ($this->isQuestion() === 'ForcefulQuestion') {
             return $this->responses['ForcefulQuestion'];
         };
@@ -96,16 +92,6 @@ class bob
     public function setResponses($responses)
     {
         $this->responses = $responses;
-    }
-    
-    public function getKey()
-    {
-        return $this->key;
-    }
-    
-    public function setKey($key)
-    {
-        $this->key = $key;
     }
         
     public function getBobSays()
