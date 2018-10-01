@@ -13,14 +13,14 @@ class bob
     
     public function isQuestion()
     {
-        $testString = trim($this->getBobSays());
+        $testString = trim($this->getInput());
         $lastCharacter = substr($testString, -1);
         $testStringUpper = strtoupper($testString);
         $testStringMinusLast = substr($testString, 0, -1);
         $testStringNoSpaces = str_replace(' ', '', $testStringMinusLast);
         if ($lastCharacter === '?') {
             if ($testStringNoSpaces === strtoupper($testStringNoSpaces) && ctype_alpha($testStringNoSpaces)) {
-                return 'ForcefulQuestion';
+                return true;
             }
             if (strpos($testStringMinusLast, '?') == false) {
                 return true;
@@ -30,7 +30,7 @@ class bob
     
     public function isSilence()
     {
-        $testString = $this->getBobSays();
+        $testString = $this->getInput();
         $testStringNoSpaces = str_replace(' ', '', $testString);
         $pregMatch = preg_match("/[\t]/", $testString, $matches, PREG_OFFSET_CAPTURE);
         if (!empty($matches)) {
@@ -43,17 +43,22 @@ class bob
     
     public function isShouting()
     {
-        $testString = $this->getBobSays();
+        $testString = $this->getInput();
         $testStringUpper = strtoupper($testString);
         $shoutArray = str_split($testString, 1);
         $testStringNoSpaces = str_replace(' ', '', $testString);
         $lastCharacter = substr($testString, -1);
         $testStringMinusLast = substr($testString, 0, -1);
+        $testStringMinusLastNoSpaces = str_replace(' ', '', $testStringMinusLast);
         if (count($shoutArray) === count(array_filter($shoutArray, 'ctype_upper'))) {
             return true;
         }
         
         if ($lastCharacter === '!' && $testString === $testStringUpper) {
+            return true;
+        }
+        
+        if ($lastCharacter === '?' && $testStringMinusLastNoSpaces === strtoupper($testStringMinusLastNoSpaces) && ctype_alpha($testStringMinusLastNoSpaces)) {
             return true;
         }
         
@@ -64,8 +69,8 @@ class bob
    
     public function respondTo($input)
     {
-        $this->bobSays = $input;
-        if ($this->isQuestion() === 'ForcefulQuestion') {
+        $this->input = $input;
+        if ($this->isQuestion() && $this->isShouting()) {
             return $this->responses['ForcefulQuestion'];
         };
         
@@ -84,24 +89,14 @@ class bob
         return $this->responses['Generic'];
     }
         
-    public function getResponses()
+    public function getInput()
     {
-        return $this->responses;
-    }
-        
-    public function setResponses($responses)
-    {
-        $this->responses = $responses;
-    }
-        
-    public function getBobSays()
-    {
-        return $this->bobSays;
+        return $this->input;
     }
     
-    public function setBobSays($bobSays)
+    public function setInput($input)
     {
-        $this->bobSays = $bobSays;
+        $this->input = $input;
         return $this;
     }
 }
