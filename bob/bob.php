@@ -13,7 +13,7 @@ class bob
     
     public function isQuestion()
     {
-        $testString = trim($this->getInput());
+        $testString = trim($this->input);
         $lastCharacter = substr($testString, -1);
         $testStringUpper = strtoupper($testString);
         $testStringMinusLast = substr($testString, 0, -1);
@@ -30,7 +30,7 @@ class bob
     
     public function isSilence()
     {
-        $testString = $this->getInput();
+        $testString = $this->input;
         $testStringNoSpaces = str_replace(' ', '', $testString);
         $pregMatch = preg_match("/[\t]/", $testString, $matches, PREG_OFFSET_CAPTURE);
         if (!empty($matches)) {
@@ -43,7 +43,7 @@ class bob
     
     public function isShouting()
     {
-        $testString = $this->getInput();
+        $testString = $this->input;
         $testStringUpper = strtoupper($testString);
         $shoutArray = str_split($testString, 1);
         $testStringNoSpaces = str_replace(' ', '', $testString);
@@ -87,16 +87,5 @@ class bob
         }
         
         return $this->responses['Generic'];
-    }
-        
-    public function getInput()
-    {
-        return $this->input;
-    }
-    
-    public function setInput($input)
-    {
-        $this->input = $input;
-        return $this;
     }
 }
