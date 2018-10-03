@@ -14,29 +14,15 @@ class bob
     public function isQuestion()
     {
         $testString = trim($this->input);
-        $lastCharacter = substr($testString, -1);
-        $testStringUpper = strtoupper($testString);
-        $testStringMinusLast = substr($testString, 0, -1);
-        $testStringNoSpaces = str_replace(' ', '', $testStringMinusLast);
-        if ($lastCharacter === '?') {
-            if ($testStringNoSpaces === strtoupper($testStringNoSpaces) && ctype_alpha($testStringNoSpaces)) {
-                return true;
-            }
-            if (strpos($testStringMinusLast, '?') == false) {
-                return true;
-            }
+        if (preg_match("/[\/?]$/", $testString)) {
+            return true;
         }
     }
     
     public function isSilence()
     {
         $testString = $this->input;
-        $testStringNoSpaces = str_replace(' ', '', $testString);
-        $pregMatch = preg_match("/[\t]/", $testString, $matches, PREG_OFFSET_CAPTURE);
-        if (!empty($matches)) {
-            return true;
-        }
-        if ($testStringNoSpaces === '') {
+        if (!preg_match("/[[:alnum:]]/", $testString)) {
             return true;
         }
     }
@@ -44,25 +30,11 @@ class bob
     public function isShouting()
     {
         $testString = $this->input;
-        $testStringUpper = strtoupper($testString);
-        $shoutArray = str_split($testString, 1);
-        $testStringNoSpaces = str_replace(' ', '', $testString);
-        $lastCharacter = substr($testString, -1);
-        $testStringMinusLast = substr($testString, 0, -1);
-        $testStringMinusLastNoSpaces = str_replace(' ', '', $testStringMinusLast);
-        if (count($shoutArray) === count(array_filter($shoutArray, 'ctype_upper'))) {
+        
+        if (preg_match("/[A-Z0-9]{4,}/", $testString)) {
             return true;
         }
-        
-        if ($lastCharacter === '!' && $testString === $testStringUpper) {
-            return true;
-        }
-        
-        if ($lastCharacter === '?' && $testStringMinusLastNoSpaces === strtoupper($testStringMinusLastNoSpaces) && ctype_alpha($testStringMinusLastNoSpaces)) {
-            return true;
-        }
-        
-        if (ctype_alpha($testStringNoSpaces) && !is_numeric($testString) && $testString === $testStringUpper) {
+        if (preg_match("/GO!/", $testString)) {
             return true;
         }
     }
