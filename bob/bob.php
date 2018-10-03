@@ -14,29 +14,28 @@ class bob
     public function isQuestion()
     {
         $testString = trim($this->input);
-        if (preg_match("/[\/?]$/", $testString)) {
-            return true;
-        }
+        return (preg_match("/[\/?]$/", $testString)); 
+            
+        
     }
     
     public function isSilence()
     {
         $testString = $this->input;
-        if (!preg_match("/[[:alnum:]]/", $testString)) {
-            return true;
-        }
+        return (!preg_match("/[[:alnum:]]/", $testString)); 
+
     }
     
     public function isShouting()
     {
         $testString = $this->input;
         
-        if (preg_match("/[A-Z0-9]{4,}/", $testString)) {
-            return true;
+        if (preg_match("/[A-Z0-9]{2,}/", $testString)) {
+	        if (preg_match("/[a-z]/", $testString) == FALSE) {
+	            return true;
+	        }
         }
-        if (preg_match("/GO!/", $testString)) {
-            return true;
-        }
+
     }
    
     public function respondTo($input)
